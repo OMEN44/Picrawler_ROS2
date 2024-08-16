@@ -9,17 +9,28 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(picrawler_interfaces REQUIRED)
+find_package(std_msgs REQUIRED)
 
-add_executable(picrawler_digital_pin src/picrawler_digital_pin.cpp)
-target_link_libraries(picrawler_digital_pin pigpiod_if2)
-ament_target_dependencies(picrawler_digital_pin rclcpp picrawler_interfaces)
+# Digital pin node
+# add_executable(picrawler_digital_pin src/picrawler_digital_pin.cpp)
+# target_link_libraries(picrawler_digital_pin pigpiod_if2)
+# ament_target_dependencies(picrawler_digital_pin rclcpp picrawler_interfaces)
+# target_include_directories(picrawler_digital_pin PUBLIC
+#   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+#   $<INSTALL_INTERFACE:include>)
 
-target_include_directories(picrawler_digital_pin PUBLIC
+# Robot hat service node
+add_executable(picrawler_robot_hat src/picrawler_robot_hat.cpp)
+target_link_libraries(picrawler_robot_hat pigpiod_if2)
+ament_target_dependencies(picrawler_robot_hat std_msgs rclcpp picrawler_interfaces)
+target_include_directories(picrawler_robot_hat PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
+
 install(TARGETS
-  picrawler_digital_pin
+  # picrawler_digital_pin
+  picrawler_robot_hat
   DESTINATION lib/${PROJECT_NAME})
 
 ament_export_include_directories(include)

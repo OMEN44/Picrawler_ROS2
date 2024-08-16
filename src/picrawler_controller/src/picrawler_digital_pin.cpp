@@ -19,15 +19,20 @@ PicrawlerDigitalPin::PicrawlerDigitalPin()
     }
 
     this->_publisher = this->create_publisher<picrawler_interfaces::msg::DigitalPinState>("read_pin_state", 10);
-    this->_subscription = this->create_subscription<picrawler_interfaces::msg::DigitalPinState>(
-        "write_pin_state", 10, std::bind(&PicrawlerDigitalPin::set_pin_states, this, _1));
+    this->_sub_write = this->create_subscription<picrawler_interfaces::msg::DigitalPinState>(
+        "write_pin_state", 10, std::bind(&PicrawlerDigitalPin::write_to_pin, this, _1));
+    this->_sub_set = this->create_subscription<picrawler_interfaces::msg::DigitalPinState>(
+        "set_pin_state", 10, std::bind(&PicrawlerDigitalPin::set_pin_states, this, _1));
     this->_timer = this->create_wall_timer(500ms, std::bind(&PicrawlerDigitalPin::publish_pin_states, this));
 }
 
 int PicrawlerDigitalPin::read(uint8_t channel)
 {
     if (channel > 3) return ERR_BAD_CHANNEL;
-    set_mode(this->_pi, this->_pins[channel], PI_INPUT);
+    if (this->_pin_states.pins[channel] < 0) {
+        RCLCPP_ERROR(this->get_logger(), "Cannot read INPUT pin.");
+        return ERR_BAD_CHANNEL;
+    }
     return gpio_read(this->_pi, this->_pins[channel]);
 }
 
@@ -46,19 +51,19 @@ void PicrawlerDigitalPin::publish_pin_states()
     //     (this->_pin_states.pins[1] ? "true" : "false"), 
     //     (this->_pin_states.pins[2] ? "true" : "false"), 
     //     (this->_pin_states.pins[3] ? "true" : "false"));
-    // auto msg = picrawler_interfaces::msg::DigitalPinState();
-    // for (int i = 0; i < 4; i++) {
-    //     msg.pins[i] = this->read(i);
-    // }
-    // this->_pin_states = msg;
+    auto msg = picrawler_interfaces::msg::DigitalPinState();
+    for (int i = 0; i < 4; i++) {
+        msg.pins[i] = this->read(i);
+    }
+    this->_pin_states = msg;
     this->_publisher->publish(this->_pin_states);
 }
 
-void PicrawlerDigitalPin::set_pin_states(const picrawler_interfaces::msg::DigitalPinState::SharedPtr targetState)
+void PicrawlerDigitalPin::write_to_pin(const picrawler_interfaces::msg::DigitalPinState::SharedPtr targetState)
 {
     RCLCPP_INFO(this->get_logger(), "Laser pin state set to: %s", (this->_pin_states.pins[3] ? "true" : "false"));
     for (int i = 0; i < 4; i++) {
-        if (targetState->pins[i] != this->_pin_states.pins[i]) {
+        if (targetState->pins[i] != -1 && targetState->pins[i] != this->_pin_states.pins[i]) {
             this->write(i, targetState->pins[i]);
         }
     }

@@ -19,13 +19,15 @@ private:
     picrawler_interfaces::msg::DigitalPinState _pin_states = picrawler_interfaces::msg::DigitalPinState();
 
     rclcpp::Publisher<picrawler_interfaces::msg::DigitalPinState>::SharedPtr _publisher;
-    rclcpp::Subscription<picrawler_interfaces::msg::DigitalPinState>::SharedPtr _subscription;
+    rclcpp::Subscription<picrawler_interfaces::msg::DigitalPinState>::SharedPtr _sub_write;
+    rclcpp::Subscription<picrawler_interfaces::msg::DigitalPinState>::SharedPtr _sub_set;
     rclcpp::TimerBase::SharedPtr _timer;
 
     int read(uint8_t channel);
     int write(uint8_t channel, bool value);
 
     void publish_pin_states();
+    void write_to_pin(const picrawler_interfaces::msg::DigitalPinState::SharedPtr targetState);
     void set_pin_states(const picrawler_interfaces::msg::DigitalPinState::SharedPtr targetState);
 
 };

@@ -1,0 +1,2 @@
+bool usr_button
+bool rst_button
