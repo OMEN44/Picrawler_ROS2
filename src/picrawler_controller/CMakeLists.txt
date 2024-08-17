@@ -27,10 +27,19 @@ target_include_directories(picrawler_robot_hat PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
+# Robot hat service node
+add_executable(picrawler_servo_control src/picrawler_servo_control.cpp)
+target_link_libraries(picrawler_servo_control pigpiod_if2)
+ament_target_dependencies(picrawler_servo_control std_msgs rclcpp picrawler_interfaces)
+target_include_directories(picrawler_servo_control PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+
 
 install(TARGETS
   # picrawler_digital_pin
   picrawler_robot_hat
+  picrawler_servo_control
   DESTINATION lib/${PROJECT_NAME})
 
 ament_export_include_directories(include)
