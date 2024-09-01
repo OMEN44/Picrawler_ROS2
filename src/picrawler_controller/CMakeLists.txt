@@ -20,20 +20,20 @@ find_package(std_msgs REQUIRED)
 #   $<INSTALL_INTERFACE:include>)
 
 # Robot hat service node
-add_executable(picrawler_robot_hat src/picrawler_robot_hat.cpp)
-target_link_libraries(picrawler_robot_hat pigpiod_if2)
-ament_target_dependencies(picrawler_robot_hat std_msgs rclcpp picrawler_interfaces)
-target_include_directories(picrawler_robot_hat PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>)
+# add_executable(picrawler_robot_hat src/picrawler_robot_hat.cpp)
+# target_link_libraries(picrawler_robot_hat pigpiod_if2)
+# ament_target_dependencies(picrawler_robot_hat std_msgs rclcpp picrawler_interfaces)
+# target_include_directories(picrawler_robot_hat PUBLIC
+#   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+#   $<INSTALL_INTERFACE:include>)
 
-# Robot hat service node
-add_executable(picrawler_servo_control src/picrawler_servo_control.cpp)
-target_link_libraries(picrawler_servo_control pigpiod_if2)
-ament_target_dependencies(picrawler_servo_control std_msgs rclcpp picrawler_interfaces)
-target_include_directories(picrawler_servo_control PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>)
+# Servo motor control node
+# add_executable(picrawler_servo_control src/picrawler_servo_control.cpp src/servo.cpp)
+# target_link_libraries(picrawler_servo_control pigpiod_if2 )
+# ament_target_dependencies(picrawler_servo_control std_msgs rclcpp picrawler_interfaces)
+# target_include_directories(picrawler_servo_control PUBLIC
+#   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+#   $<INSTALL_INTERFACE:include>)
 
 
 install(TARGETS

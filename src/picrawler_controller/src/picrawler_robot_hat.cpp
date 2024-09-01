@@ -89,7 +89,7 @@ void PicrawlerRobotHat::publish_battery()
     auto msg = picrawler_interfaces::msg::BatteryState();
     msg.voltage = avg * 3.3 / 4095 * 3;
     msg.percent = std::round((msg.voltage - 5) / 3.4 * 100);
-    RCLCPP_INFO(this->get_logger(), "Battery voltage: %fV, %f%%", msg.voltage, (msg.voltage - 5) / 3.4 * 100);
+    // RCLCPP_INFO(this->get_logger(), "Battery voltage: %fV, %f%%", msg.voltage, (msg.voltage - 5) / 3.4 * 100);
     msg.needs_charging = (msg.percent < 20);
     // WARNING!!! Voltage below 5V will damage battery
     //Note: 8.4 is maximum voltage (Must verify this)
